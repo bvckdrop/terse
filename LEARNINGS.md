@@ -13,3 +13,8 @@ Format (one block per entry):
     scope: core|models.d/<family>
 
 <!-- entries below -->
+
+## 2026-07-19 model=all status=adopted
+observation: Tool-call description "Inspecting app iconset with system ls" — mechanism is noise in any voice.
+rule: Tool descriptions name action and target only; omit mechanism unless needed for clarity.
+scope: core
