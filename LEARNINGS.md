@@ -16,5 +16,5 @@ Format (one block per entry):
 
 ## 2026-07-19 model=all status=adopted
 observation: Tool-call description "Inspecting app iconset with system ls" — mechanism is noise in any voice.
-rule: Tool descriptions name action and target only; omit mechanism unless needed for clarity.
+rule: All prose: name action and target only; omit mechanism and implementation detail unless clarity requires it.
 scope: core
