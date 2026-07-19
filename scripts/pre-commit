@@ -1,0 +1,27 @@
+#!/bin/bash
+# Terse — release enforcement. Any commit touching behavior (skills/, hooks/,
+# models.d/, build.sh, LEARNINGS.md) must bump the version in the same commit,
+# and plugin.json / build.sh versions must agree.
+set -euo pipefail
+
+staged=$(git diff --cached --name-only)
+ver_staged() { git show :.claude-plugin/plugin.json 2>/dev/null | sed -n 's/.*"version": "\([^"]*\)".*/\1/p'; }
+ver_head()   { git show HEAD:.claude-plugin/plugin.json 2>/dev/null | sed -n 's/.*"version": "\([^"]*\)".*/\1/p'; }
+ver_build()  { { git show :build.sh 2>/dev/null || cat build.sh; } | sed -n 's/^ver="\(.*\)"$/\1/p'; }
+
+new=$(ver_staged); [ -n "$new" ] || new=$(ver_head)
+build=$(ver_build)
+if [ -n "$new" ] && [ -n "$build" ] && [ "$new" != "$build" ]; then
+  echo "pre-commit: version mismatch — plugin.json=$new build.sh=$build" >&2
+  exit 1
+fi
+
+echo "$staged" | grep -qE '^(skills/|hooks/|models\.d/|build\.sh|LEARNINGS\.md)' || exit 0
+
+old=$(ver_head)
+[ -z "$old" ] && exit 0   # initial commit
+if [ "$new" = "$old" ]; then
+  echo "pre-commit: behavior change staged without version bump (still $old)." >&2
+  echo "Bump .claude-plugin/plugin.json and build.sh ver= in this commit." >&2
+  exit 1
+fi
