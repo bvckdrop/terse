@@ -59,6 +59,11 @@ Every subagent prompt you compose (Agent/Task tools, Workflow agent() calls) end
 `mode=`, `voice=`, `anchor_every=`, `model=default|small`). Confirm in one line.
 Takes effect next prompt. The Charter is not toggleable.
 
+`/terse upgrade` → run `~/.claude/terse/build.sh`, then read
+`~/.claude/terse/dist/inject.<model>.txt` into context and follow it — the
+current session adopts the latest compiled ruleset without a restart.
+Confirm with the version line only.
+
 ## Learning (/terse learn)
 
 When the user repeatedly corrects a style aspect, or asks to record a rule:

@@ -8,7 +8,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p dist
 
-ver="1.2.0"
+ver="1.3.0"
 
 # Adopted learnings, charter-gated: reject entries that weaken tiers 1-3.
 learned() { # $1 = family filter (family name or 'all' matches everything)
