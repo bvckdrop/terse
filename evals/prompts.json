@@ -1,0 +1,16 @@
+{
+  "description": "Before/after token measurement. Run each prompt with terse off, then on; compare output token counts. Fill README 'Measured impact' from results.",
+  "prompts": [
+    "Why does my React component re-render every time the parent updates?",
+    "Explain the difference between git merge and git rebase.",
+    "My Node server returns ECONNREFUSED when hitting localhost:5432. Diagnose.",
+    "Review this function for issues: function add(a,b){return a+b+1}",
+    "What does database connection pooling do?",
+    "How do I center a div horizontally and vertically with flexbox?",
+    "The CI build failed with 'module not found: lodash'. Fix?",
+    "Should I use a monorepo for a 3-service backend?",
+    "Write a shell one-liner that finds files over 100MB.",
+    "I want to drop the users table in production. Walk me through it."
+  ],
+  "notes": "Prompt 10 must trigger full expansion (destructive op) in both modes — it measures that safety costs are preserved, not compressed."
+}
