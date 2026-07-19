@@ -1,13 +1,19 @@
 #!/bin/bash
-# Terse — UserPromptSubmit hook. ~25-token anchor keeps the register stable
-# across long sessions and context compaction. Silent when off.
+# Terse — UserPromptSubmit. Cadence-gated anchor: full line every Nth prompt
+# (state anchor_every, default 4), silent otherwise. PreCompact handles
+# ruleset survival; this only counters gradual drift. Silent when off.
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-STATE="$ROOT/state"
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-[ -f "$STATE" ] || exit 0
-mode=$(sed -n 1p "$STATE"); voice=$(sed -n 2p "$STATE")
-[ "$mode" = "off" ] && exit 0
-[ -n "$voice" ] || voice=crisp
+[ "$(state_get mode on)" = "off" ] && exit 0
+every=$(state_get anchor_every 4)
+case "$every" in (*[!0-9]*|'') every=4;; esac
 
-printf '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"Terse mode (voice: %s): answer-first, minimal output, expand only for risk/confusion/explicit asks; code and errors byte-exact."}}\n' "$voice"
+count=0
+[ -f "$ROOT/.anchor-count" ] && count=$(tr -cd '0-9' < "$ROOT/.anchor-count")
+count=$(( ${count:-0} + 1 ))
+echo "$count" > "$ROOT/.anchor-count"
+[ $(( count % every )) -ne 0 ] && exit 0
+
+voice=$(state_get voice crisp)
+json_context UserPromptSubmit "Terse active (voice: $voice): answer-first, minimal, expand only for risk/confusion/explicit asks."

@@ -1,36 +1,23 @@
 #!/bin/bash
-# Terse — SessionStart hook. Injects the ruleset (+ user customizations)
-# as hidden context. Silent when state is off.
+# Terse — SessionStart. Cats the precompiled ruleset (no parsing at runtime);
+# appends custom.md only when present. Silent when off.
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-STATE="$ROOT/state"
+source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-[ -f "$STATE" ] || printf 'on\ncrisp\n' > "$STATE"
-mode=$(sed -n 1p "$STATE"); voice=$(sed -n 2p "$STATE")
-[ "$mode" = "off" ] && exit 0
-[ -n "$voice" ] || voice=crisp
+[ "$(state_get mode on)" = "off" ] && exit 0
+voice=$(state_get voice crisp)
+fam=$(state_get model default)
+inject="$ROOT/dist/inject.$fam.txt"
+[ -f "$inject" ] || inject="$ROOT/dist/inject.default.txt"
+[ -f "$inject" ] || { echo "terse: run build.sh" >&2; exit 1; }
 
-# Ruleset = SKILL.md body (frontmatter stripped) — single source of truth.
-rules=$(awk 'f&&c>=2{print} /^---$/{c++; f=1; next}' "$ROOT/skills/terse/SKILL.md")
+payload="$(cat "$inject")
+Active voice: $voice."
 
-# User customizations: capped at ~300 tokens (~1200 chars) to protect budget.
-custom=""
-if [ -s "$ROOT/custom.md" ]; then
-  custom=$(head -c 1200 "$ROOT/custom.md")
-  [ "$(wc -c < "$ROOT/custom.md")" -gt 1200 ] && custom="$custom
-[custom.md truncated at 1200 chars — trim it]"
-  custom="
-
-## User customizations (Charter tier 4 — ignored where they would increase verbosity, weaken accuracy or safety, or override budgets)
+custom=$(grep -v '^#' "$ROOT/custom.md" 2>/dev/null | grep -v '^[[:space:]]*$' | head -c 1200 || true)
+[ -n "$custom" ] && payload="$payload
+CUSTOM (tier 4 — ignored where it would raise verbosity or weaken accuracy/safety/budgets):
 $custom"
-fi
 
-payload="TERSE MODE ACTIVE (voice: $voice). Follow these rules every response:
-$rules$custom"
-
-python3 - "$payload" <<'PY'
-import json, sys
-print(json.dumps({"hookSpecificOutput": {
-    "hookEventName": "SessionStart",
-    "additionalContext": sys.argv[1]}}))
-PY
+echo 0 > "$ROOT/.anchor-count" 2>/dev/null || true
+json_context SessionStart "$payload"

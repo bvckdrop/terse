@@ -58,13 +58,24 @@ by Charter precedence. Oversize files truncate at ~300 tokens with a warning.
 ./install.sh --platform cursor [project]  # Cursor: project rule, or paste-ready global block
 ```
 
-Claude Code gets the full system: session ruleset injection, a ~25-token per-prompt
-anchor (survives context compaction), subagent digest propagation (PreToolUse rewrite),
-and the `/terse` toggle. Codex and Cursor are static-rule platforms: always-on Charter +
-register + ladder inside managed markers (idempotent installs, clean removal).
+Claude Code gets the full system: compiled ruleset injection at session start
+(~400 tokens, precompiled to `dist/` — hooks only `cat`), a cadence-gated anchor
+(every 4th prompt, `anchor_every` in `state`), **PreCompact re-injection** so the
+contract survives context compaction authoritatively, subagent digest propagation
+(PreToolUse rewrite with a pure-bash fast path), and the `/terse` toggle. Codex and
+Cursor are static-rule platforms: managed marker blocks, idempotent, clean removal.
 
-Source of truth: `skills/terse/SKILL.md`. After editing it, `./build.sh` regenerates
-platform artifacts; Claude Code picks it up live through symlinks.
+Source of truth: `skills/terse/SKILL.md` (+ `models.d/` overlays + adopted
+`LEARNINGS.md` entries). After editing any of them, `./build.sh` recompiles `dist/`.
+
+## Model adaptivity & learning
+
+- `models.d/default.md` (frontier models — lean) and `models.d/small.md` (Haiku-class —
+  firmer imperatives) compile into per-family rulesets; `model=` in `state` selects.
+- `LEARNINGS.md` is the rule-evolution journal: the assistant appends *candidates*
+  when style corrections recur; only human-promoted `status=adopted` entries compile
+  in, scoped per model family, and `build.sh` auto-rejects anything that would weaken
+  Charter tiers 1–3. New model generation? Add an overlay file — nothing else changes.
 
 ## Uninstall
 

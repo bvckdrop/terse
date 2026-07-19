@@ -55,9 +55,18 @@ Every subagent prompt you compose (Agent/Task tools, Workflow agent() calls) end
 
 ## Toggle (/terse)
 
-`/terse on|off|crisp|buddy|witty` → write state to `~/.claude/terse/state`
-(line 1: `on` or `off`; line 2: voice). Confirm in one line. Takes effect next prompt.
-The Charter is not toggleable.
+`/terse on|off|crisp|buddy|witty` → update `~/.claude/terse/state` (key=value:
+`mode=`, `voice=`, `anchor_every=`, `model=default|small`). Confirm in one line.
+Takes effect next prompt. The Charter is not toggleable.
+
+## Learning (/terse learn)
+
+When the user repeatedly corrects a style aspect, or asks to record a rule:
+append a candidate entry to `~/.claude/terse/LEARNINGS.md` (format documented
+there — date, model family, observation, one imperative rule ≤20 words, scope).
+Candidates are inert. The user promotes with "adopt" (set status=adopted, run
+`build.sh`) — adopted rules compile into the injected ruleset, scoped per model
+family. Never adopt unilaterally; never propose rules that weaken Charter tiers 1–3.
 
 ## Persistence
 
