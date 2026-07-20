@@ -1,53 +1,45 @@
 # Terse
 
-Efficient communication for AI coding agents: maximum brevity by default, automatic
-expansion exactly where compression would risk confusion or errors.
+Efficient communication for AI coding agents: answer-first, minimal by default,
+automatic expansion where compression would risk confusion or errors.
 
-Answer first. Zero filler. Nothing lost that matters.
+## Charter
 
-## The Charter
-
-Four tiers, precedence highest first. Nothing overrides a higher tier — not voices,
-not customizations, not future extensions.
+Four tiers; higher always wins.
 
 1. **Accuracy** — code, commands, errors, paths, identifiers, numbers: byte-exact.
-   No invented abbreviations (they save no tokens and cost clarity).
+   No invented abbreviations.
 2. **Clarity-on-risk** — the Expansion Ladder always fires: destructive actions,
    security, failures, ambiguity, user confusion, explicit asks, first-mention concepts.
 3. **Brevity** — answer-first; budgets (status ≤1 line, success ≤2, diagnosis = cause→fix);
    no preamble, narration, recaps, or unsolicited next-steps.
-4. **Voice & customization** — word-choice layers only.
+4. **Voice & customization** — word choice only.
 
 ## Voices
 
 | Voice | Character |
 |---|---|
-| **crisp** (default) | Pure economy. No persona. |
-| **buddy** | Subtle camaraderie — warm address, occasional "we". |
-| **witty** | Subtle cleverness riding existing analysis. Never manufactures content to be clever. |
+| **crisp** (default) | Pure economy, no persona |
+| **buddy** | Light supportive interjections on wins; no "we" |
+| **witty** | Clever only where it fits; zero decoding cost |
+| **auto** | Picks per response from prompt tone; risk moments always crisp |
 
-One voice active; single intensity; ±10% of crisp's length; never colors warnings,
-errors, or destructive confirmations. Toggle: `/terse crisp|buddy|witty`, `/terse off|on`.
+±10% of crisp's length; never colors warnings, errors, or code.
 
-## Estimated output-token reduction
+Commands: `/terse on|off|crisp|buddy|witty|auto`, `/terse help`,
+`/terse upgrade` (reload ruleset in-session), `/terse learn` (distill feedback
+into a rule candidate), `/terse prune`.
 
-Vs. typical unstyled assistant responses (response-shape estimate; measure with `evals/`):
+## Output-token reduction
 
-| Voice | Est. reduction |
-|---|---|
-| crisp | ~55–70% |
-| buddy | ~55–65% |
-| witty | ~55–65% |
-
-**Measured impact**: run the 10 prompts in `evals/prompts.json` with terse off/on,
-record output tokens, fill this table. Prompt 10 verifies safety text is never compressed.
+~55–70% vs unstyled responses (estimate). Measure: run `evals/prompts.json`
+with terse off/on; prompt 10 verifies safety text is never compressed.
 
 ## Customization
 
-Add prose preferences to `custom.md` (see `custom.example.md`): one rule per line,
-≤15 words, max 10 rules, word-choice/punctuation/formatting scope only. Rules that
-would increase verbosity, weaken accuracy or safety, or override budgets are ignored
-by Charter precedence. Oversize files truncate at ~300 tokens with a warning.
+`custom.md` (see `custom.example.md`): ≤10 rules, ≤15 words each,
+word-choice/punctuation/formatting scope only. Charter precedence ignores
+anything that would increase verbosity or weaken accuracy, safety, or budgets.
 
 ## Install
 
@@ -58,27 +50,30 @@ by Charter precedence. Oversize files truncate at ~300 tokens with a warning.
 ./install.sh --platform cursor [project]  # Cursor: project rule, or paste-ready global block
 ```
 
-Claude Code marketplace alternative: `/plugin marketplace add bvckdrop/terse`,
-then `/plugin install terse@bvckdrop`.
+Claude Code marketplace: `/plugin marketplace add bvckdrop/terse`, then
+`/plugin install terse@bvckdrop`.
 
-Claude Code gets the full system: compiled ruleset injection at session start
-(~400 tokens, precompiled to `dist/` — hooks only `cat`), a cadence-gated anchor
-(every 4th prompt, `anchor_every` in `state`), SessionStart re-firing after
-compaction (source=compact) so the contract survives it, subagent digest propagation
-(PreToolUse rewrite with a pure-bash fast path), and the `/terse` toggle. Codex and
-Cursor are static-rule platforms: managed marker blocks, idempotent, clean removal.
+Claude Desktop / Cowork: `./build.sh`, then upload
+`dist/terse-claude-desktop-skill.zip` (Settings → Capabilities → Skills) or drop
+`dist/terse-claude-desktop.plugin` into a Cowork chat. Skills-only — no hooks or state.
 
-Source of truth: `skills/terse/SKILL.md` (+ `models.d/` overlays + adopted
-`LEARNINGS.md` entries). After editing any of them, `./build.sh` recompiles `dist/`.
+Claude Code runs the full dynamic system: compiled ruleset injection at session
+start (~400 tokens), cadence-gated anchor, re-injection after compaction,
+subagent digest propagation, `/terse` toggle. Codex, Cursor, and Desktop are
+static-rule platforms: managed blocks, idempotent, clean removal.
+
+Source of truth: `skills/terse/SKILL.md` + `models.d/` overlays + adopted
+`LEARNINGS.md` entries. After editing any of them, `./build.sh` recompiles `dist/`.
 
 ## Model adaptivity & learning
 
-- `models.d/default.md` (frontier models — lean) and `models.d/small.md` (Haiku-class —
-  firmer imperatives) compile into per-family rulesets; `model=` in `state` selects.
-- `LEARNINGS.md` is the rule-evolution journal: the assistant appends *candidates*
-  when style corrections recur; only human-promoted `status=adopted` entries compile
-  in, scoped per model family, and `build.sh` auto-rejects anything that would weaken
-  Charter tiers 1–3. New model generation? Add an overlay file — nothing else changes.
+- `models.d/default.md` (frontier models) and `models.d/small.md` (Haiku-class)
+  compile into per-family rulesets; family auto-detected per session, `model=`
+  in `state` forces.
+- `LEARNINGS.md` is the rule-evolution journal: the assistant appends candidates
+  when style corrections recur; only human-promoted `status=adopted` entries
+  compile in. `build.sh` rejects anything that would weaken tiers 1–3.
+  New model generation: add an overlay file.
 
 ## Uninstall
 
