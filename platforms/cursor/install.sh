@@ -8,8 +8,18 @@ RULE="$ROOT/platforms/cursor/terse.mdc"
 
 if [ "${1:-}" = "--uninstall" ]; then
   if [ -n "${2:-}" ]; then
-    rm -f "$2/.cursor/rules/terse.mdc"
-    echo "Removed $2/.cursor/rules/terse.mdc."
+    f="$2/.cursor/rules/terse.mdc"
+    if [ ! -e "$f" ]; then
+      echo "Cursor: not installed in $2 — nothing to remove."
+      exit 0
+    fi
+    echo "Cursor: project rule found — removing."
+    rm -f "$f"
+    if [ -e "$f" ]; then
+      echo "Cursor: uninstall INCOMPLETE — $f still present" >&2
+      exit 1
+    fi
+    echo "Cursor: full uninstall succeeded — verified clean."
   else
     echo "Project rule: rm <project>/.cursor/rules/terse.mdc"
     echo "Global: delete the terse block from Cursor → Settings → Rules → User Rules."

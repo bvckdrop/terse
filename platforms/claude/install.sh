@@ -6,6 +6,24 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 CLAUDE="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
 if [ "${1:-}" = "--uninstall" ]; then
+  # Verify what's actually installed before touching anything.
+  present=""; absent=""
+  { [ -L "$CLAUDE/terse" ] || [ -e "$CLAUDE/terse" ]; } \
+    && present="$present ~/.claude/terse" || absent="$absent ~/.claude/terse"
+  { [ -L "$CLAUDE/skills/terse" ] || [ -e "$CLAUDE/skills/terse" ]; } \
+    && present="$present ~/.claude/skills/terse" || absent="$absent ~/.claude/skills/terse"
+  grep -q 'terse/hooks' "$CLAUDE/settings.json" 2>/dev/null \
+    && present="$present settings.json-hooks" || absent="$absent settings.json-hooks"
+
+  if [ -z "$present" ]; then
+    echo "Claude Code: not installed — nothing to remove."
+    exit 0
+  elif [ -n "$absent" ]; then
+    echo "Claude Code: partial installation (present:$present; missing:$absent) — removing what's present."
+  else
+    echo "Claude Code: full installation found — removing."
+  fi
+
   rm -f "$CLAUDE/terse" "$CLAUDE/skills/terse"
   python3 - "$CLAUDE/settings.json" <<'PY'
 import json, sys
@@ -25,7 +43,17 @@ if not hooks: s.pop("hooks", None)
 with open(path, "w") as f: json.dump(s, f, indent=2)
 print("settings.json: terse hooks removed")
 PY
-  echo "Claude Code uninstall complete. Takes effect in new sessions."
+
+  # Verify removal succeeded.
+  left=""
+  { [ -L "$CLAUDE/terse" ] || [ -e "$CLAUDE/terse" ]; } && left="$left ~/.claude/terse"
+  { [ -L "$CLAUDE/skills/terse" ] || [ -e "$CLAUDE/skills/terse" ]; } && left="$left ~/.claude/skills/terse"
+  grep -q 'terse/hooks' "$CLAUDE/settings.json" 2>/dev/null && left="$left settings.json-hooks"
+  if [ -n "$left" ]; then
+    echo "Claude Code: uninstall INCOMPLETE — still present:$left" >&2
+    exit 1
+  fi
+  echo "Claude Code: full uninstall succeeded — verified clean. Takes effect in new sessions."
   exit 0
 fi
 
