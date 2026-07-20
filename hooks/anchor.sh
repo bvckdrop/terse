@@ -1,7 +1,7 @@
 #!/bin/bash
 # Terse — UserPromptSubmit. Cadence-gated anchor: full line every Nth prompt
-# (state anchor_every, default 4), silent otherwise. PreCompact handles
-# ruleset survival; this only counters gradual drift. Silent when off.
+# (state anchor_every, default 4), silent otherwise. SessionStart
+# re-fires post-compaction for ruleset survival; this only counters gradual drift. Silent when off.
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 

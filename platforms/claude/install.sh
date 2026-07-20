@@ -36,9 +36,8 @@ def ensure(event, e):
         arr.append(e)
 ensure("SessionStart", entry("session-start.sh"))
 ensure("UserPromptSubmit", entry("anchor.sh"))
-ensure("PreCompact", entry("pre-compact.sh"))
 ensure("PreToolUse", entry("subagent.sh", "Task|Agent"))
 with open(path, "w") as f: json.dump(s, f, indent=2)
-print("settings.json: terse hooks registered (SessionStart, UserPromptSubmit, PreCompact, PreToolUse)")
+print("settings.json: terse hooks registered (SessionStart, UserPromptSubmit, PreToolUse)")
 PY
 echo "Claude Code install complete. Takes effect in new sessions."

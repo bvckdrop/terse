@@ -1,0 +1,7 @@
+{
+  "name": "terse",
+  "version": "1.3.18",
+  "description": "Efficient-communication mode: terse by default, automatic expansion where compression risks confusion or errors. Voices: crisp, buddy, witty, auto.",
+  "author": { "name": "bvckdrop" },
+  "license": "MIT"
+}

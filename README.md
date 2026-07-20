@@ -60,8 +60,8 @@ by Charter precedence. Oversize files truncate at ~300 tokens with a warning.
 
 Claude Code gets the full system: compiled ruleset injection at session start
 (~400 tokens, precompiled to `dist/` — hooks only `cat`), a cadence-gated anchor
-(every 4th prompt, `anchor_every` in `state`), **PreCompact re-injection** so the
-contract survives context compaction authoritatively, subagent digest propagation
+(every 4th prompt, `anchor_every` in `state`), SessionStart re-firing after
+compaction (source=compact) so the contract survives it, subagent digest propagation
 (PreToolUse rewrite with a pure-bash fast path), and the `/terse` toggle. Codex and
 Cursor are static-rule platforms: managed marker blocks, idempotent, clean removal.
 

@@ -6,9 +6,22 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 [ "$(state_get mode on)" = "off" ] && exit 0
 voice=$(state_get voice crisp)
-fam=$(state_get model default)
-inject="$ROOT/dist/inject.$fam.txt"
-[ -f "$inject" ] || inject="$ROOT/dist/inject.default.txt"
+
+# model=auto (default): detect the session model from stdin JSON and map it to
+# an inject family; explicit default|small forces. Detected family is recorded
+# as family= in state for /terse upgrade and other tooling.
+fam=$(state_get model auto)
+case "$fam" in
+  default|small) ;;
+  *) input=""; [ -t 0 ] || input=$(cat || true)
+     mid=$(printf '%s' "$input" | sed -n 's/.*"model"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
+     fam=$(family_for_model "$mid")
+     ;;
+esac
+state_set family "$fam"
+
+inject="$ROOT/dist/claude-code-inject.$fam.txt"
+[ -f "$inject" ] || inject="$ROOT/dist/claude-code-inject.default.txt"
 [ -f "$inject" ] || { echo "terse: run build.sh" >&2; exit 1; }
 
 payload="$(cat "$inject")

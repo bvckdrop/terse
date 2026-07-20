@@ -10,7 +10,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 input=$(cat)
 case "$input" in *"Terse report:"*) exit 0;; esac
 
-DIGEST="$(cat "$ROOT/dist/digest.txt" 2>/dev/null || printf 'Terse report: answer first, no filler; code/errors exact.')"
+DIGEST="$(cat "$ROOT/dist/claude-code-subagent-digest.txt" 2>/dev/null || printf 'Terse report: answer first, no filler; code/errors exact.')"
 export TERSE_DIGEST="$DIGEST"
 python3 - "$input" <<'PY'
 import json, os, sys

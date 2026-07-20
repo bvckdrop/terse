@@ -2,7 +2,8 @@
 
 Append-only. Entries become active ONLY when status=adopted and `build.sh` runs
 (adopted rules compile into dist/; candidates are never injected). Promotion or
-rejection is a human decision. The Charter gate applies: any entry that would
+rejection is a human decision. Rejected entries are deleted immediately — no
+archive; status=rejected exists only as a transient hand-mark for prune.sh. The Charter gate applies: any entry that would
 weaken tiers 1–3 (accuracy, risk-clarity, brevity) is auto-rejected by build.sh.
 
 Format (one block per entry):
@@ -10,7 +11,11 @@ Format (one block per entry):
     ## 2026-07-19 model=<family|all> status=candidate|adopted|rejected
     observation: <what happened / what the user corrected>
     rule: <one imperative line, ≤20 words>
+    example: BAD: <offending phrasing> → GOOD: <rewrite>   (optional, one line)
     scope: core|models.d/<family>
+
+Examples are journal-only: build.sh compiles `rule:` lines, never examples —
+they document intent for review and graduation, at zero injected-token cost.
 
 ## Graduation policy
 
@@ -32,3 +37,4 @@ provenance, no longer compiled from the journal), run build.sh.
 observation: Tool-call description "Inspecting app iconset with system ls" — mechanism is noise in any voice.
 rule: All prose: name action and target only; omit mechanism and implementation detail unless clarity requires it.
 scope: core
+
