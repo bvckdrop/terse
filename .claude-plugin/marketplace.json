@@ -1,0 +1,13 @@
+{
+  "name": "bvckdrop",
+  "owner": {
+    "name": "bvckdrop"
+  },
+  "plugins": [
+    {
+      "name": "terse",
+      "source": "./",
+      "description": "Efficient communication by default: answer-first, zero filler, automatic expansion where brevity would risk confusion or errors."
+    }
+  ]
+}
