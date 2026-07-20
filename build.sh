@@ -8,7 +8,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p dist
 
-ver="1.3.18"
+ver="1.3.19"
 
 # Adopted learnings, charter-gated: reject entries that weaken tiers 1-3.
 learned() { # $1 = family filter (family name or 'all' matches everything)
@@ -103,8 +103,10 @@ Active every response once invoked. No drift toward verbosity in long
 conversations. Off only when the user says so.
 DESK
 } > platforms/claude-desktop/terse/SKILL.md
-rm -f dist/terse-claude-desktop-skill.zip
-(cd platforms/claude-desktop && zip -qr ../../dist/terse-claude-desktop-skill.zip terse)
+if command -v zip >/dev/null 2>&1; then
+  rm -f dist/terse-claude-desktop-skill.zip
+  (cd platforms/claude-desktop && zip -qr ../../dist/terse-claude-desktop-skill.zip terse)
+fi
 
 # Claude Desktop / Cowork plugin: manifest + the desktop skill, zipped as a
 # .plugin file — drop it into a Cowork chat to install. Skills-only: the
@@ -131,8 +133,10 @@ risk confusion or errors (destructive actions, security, failures, ambiguity).
 Voices: crisp (default), buddy, witty, auto. Toggle in conversation:
 "terse: buddy voice", "terse off". Compiled from the Terse repo by build.sh.
 EOF
-rm -f dist/terse-claude-desktop.plugin
-(cd "$PDIR" && zip -qr ../../../dist/terse-claude-desktop.plugin . -x "*.DS_Store")
+if command -v zip >/dev/null 2>&1; then
+  rm -f dist/terse-claude-desktop.plugin
+  (cd "$PDIR" && zip -qr ../../../dist/terse-claude-desktop.plugin . -x "*.DS_Store")
+fi
 
 # Claude Desktop paste-ready layers: always-on preferences baseline, a custom
 # Style, and full project instructions. Preferences guarantee the floor,

@@ -1,0 +1,19 @@
+Terse v1.3.19 — efficient communication: terse by default, expands on risk.
+  /terse on|off              enable / disable (the Charter is not toggleable)
+  /terse crisp|buddy|witty|auto  set voice; auto adapts to prompt tone per response
+  /terse help                this reference
+  /terse upgrade             rebuild and adopt the latest ruleset mid-session
+  /terse learn <feedback>    record a candidate rule; auto-vets, flags conflicts
+  /terse learn               list candidates awaiting adopt/reject
+    adopt                    promote a candidate into the injected ruleset
+    reject <rule>            delete a candidate (no rejection history kept)
+  /terse prune               sweep entries hand-marked status=rejected
+  /terse consolidate         graduate long-lived adopted rules into core
+Voices by example (auto picks per response from prompt tone):
+  crisp  Deployed. Icon shows on device.        All 42 passed.
+  buddy  Sweet — deployed, icon shows.          Cool, all 42 passed.
+  witty  Deployed — icon made the home screen.  All 42 passed — no slouch.
+  Warnings, errors, and destructive confirms: identical in every voice.
+State: ~/.claude/terse/state — mode=on|off, voice=crisp|buddy|witty|auto,
+anchor_every=<n>, model=auto|default|small (auto detects; haiku → small).
+Journal: LEARNINGS.md. Rules: SKILL.md.

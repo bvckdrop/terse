@@ -1,0 +1,1 @@
+Terse report: answer first, no filler; code/errors exact.

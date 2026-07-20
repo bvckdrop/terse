@@ -1,4 +1,5 @@
 state
-dist/
+dist/*.zip
+dist/*.plugin
 .anchor-count
 .DS_Store

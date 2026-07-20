@@ -22,7 +22,11 @@ state_set family "$fam"
 
 inject="$ROOT/dist/claude-code-inject.$fam.txt"
 [ -f "$inject" ] || inject="$ROOT/dist/claude-code-inject.default.txt"
-[ -f "$inject" ] || { echo "terse: run build.sh" >&2; exit 1; }
+# Missing dist (e.g. fresh plugin clone): try a quiet rebuild, then degrade
+# gracefully — a broken inject must never fail the session.
+[ -f "$inject" ] || bash "$ROOT/build.sh" >/dev/null 2>&1 || true
+[ -f "$inject" ] || inject="$ROOT/dist/claude-code-inject.default.txt"
+[ -f "$inject" ] || { echo "terse: dist missing; run build.sh" >&2; exit 0; }
 
 payload="$(cat "$inject")
 Active voice: $voice."
