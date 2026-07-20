@@ -5,6 +5,30 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 CLAUDE="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
+if [ "${1:-}" = "--uninstall" ]; then
+  rm -f "$CLAUDE/terse" "$CLAUDE/skills/terse"
+  python3 - "$CLAUDE/settings.json" <<'PY'
+import json, sys
+path = sys.argv[1]
+try:
+    with open(path) as f: s = json.load(f)
+except FileNotFoundError:
+    sys.exit(0)
+hooks = s.get("hooks", {})
+for event in ("SessionStart", "UserPromptSubmit", "PreToolUse"):
+    arr = hooks.get(event)
+    if not arr: continue
+    arr[:] = [g for g in arr
+              if not any("terse" in h.get("command", "") for h in g.get("hooks", []))]
+    if not arr: del hooks[event]
+if not hooks: s.pop("hooks", None)
+with open(path, "w") as f: json.dump(s, f, indent=2)
+print("settings.json: terse hooks removed")
+PY
+  echo "Claude Code uninstall complete. Takes effect in new sessions."
+  exit 0
+fi
+
 "$ROOT/build.sh" >/dev/null
 mkdir -p "$CLAUDE/skills"
 ln -sfn "$ROOT" "$CLAUDE/terse"

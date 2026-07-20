@@ -58,6 +58,9 @@ by Charter precedence. Oversize files truncate at ~300 tokens with a warning.
 ./install.sh --platform cursor [project]  # Cursor: project rule, or paste-ready global block
 ```
 
+Claude Code marketplace alternative: `/plugin marketplace add bvckdrop/terse`,
+then `/plugin install terse@bvckdrop`.
+
 Claude Code gets the full system: compiled ruleset injection at session start
 (~400 tokens, precompiled to `dist/` — hooks only `cat`), a cadence-gated anchor
 (every 4th prompt, `anchor_every` in `state`), SessionStart re-firing after
@@ -79,7 +82,11 @@ Source of truth: `skills/terse/SKILL.md` (+ `models.d/` overlays + adopted
 
 ## Uninstall
 
-- Claude Code: remove the three `terse` hook entries from `~/.claude/settings.json`;
-  delete symlinks `~/.claude/terse` and `~/.claude/skills/terse`.
-- Codex: delete the `# --- terse:begin/end ---` block from `~/.codex/AGENTS.md`.
-- Cursor: delete `.cursor/rules/terse.mdc` / remove the User Rules block.
+```
+./install.sh --uninstall                   # all platforms
+./install.sh --uninstall claude            # one: claude|codex|cursor
+./install.sh --uninstall cursor [project]  # remove a project rule
+```
+
+- Marketplace install: `/plugin uninstall terse@bvckdrop`.
+- Cursor global User Rules block must be removed by hand (not scriptable).
