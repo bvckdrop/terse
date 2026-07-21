@@ -28,12 +28,30 @@ Four tiers; higher always wins.
 
 Commands: `/terse on|off|crisp|buddy|witty|auto`, `/terse help`,
 `/terse upgrade` (reload ruleset in-session), `/terse learn` (distill feedback
-into a rule candidate), `/terse prune`.
+into a rule candidate), `/terse prune`, `/terse compress <file>` (shrink a
+memory file's input-token cost — see `skills/compress/`; Claude Code only).
 
 ## Output-token reduction
 
 ~55–70% vs unstyled responses (estimate). Measure: run `evals/prompts.json`
 with terse off/on; prompt 10 verifies safety text is never compressed.
+
+## Compress (input-token reduction)
+
+`/terse compress <file>` shrinks a memory file (`CLAUDE.md`, todos,
+preferences) so it costs fewer tokens every time it loads — the input-side
+complement to the output-side reduction above. Same Charter (accuracy and
+clarity outrank brevity) — grammar and articles stay intact, never stripped
+for extra compression. Original is never lost: an out-of-tree backup is
+kept, editable, and never clobbered on rerun. Code, URLs, paths, commands,
+and structure are preserved exactly — only prose is rewritten. Claude Code
+only (needs Bash + Python 3; Codex, Cursor, and Desktop can't run the
+validator scripts). See `skills/compress/SKILL.md`.
+
+Measure: `pip install -r skills/compress/scripts/requirements.txt`
+(optional — accurate token counts via tiktoken; falls back to word count
+without it), then `python3 skills/compress/scripts/benchmark.py` from the
+repo root, against `evals/compress-samples/`.
 
 ## Customization
 

@@ -8,7 +8,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 mkdir -p dist
 
-ver="1.3.19"
+ver="1.4.1"
 
 # Adopted learnings, charter-gated: reject entries that weaken tiers 1-3.
 learned() { # $1 = family filter (family name or 'all' matches everything)
@@ -53,6 +53,7 @@ Terse v$ver — efficient communication: terse by default, expands on risk.
     reject <rule>            delete a candidate (no rejection history kept)
   /terse prune               sweep entries hand-marked status=rejected
   /terse consolidate         graduate long-lived adopted rules into core
+  /terse compress <file>     compress a memory file's input-token cost (skills/compress)
 Voices by example (auto picks per response from prompt tone):
   crisp  Deployed. Icon shows on device.        All 42 passed.
   buddy  Sweet — deployed, icon shows.          Cool, all 42 passed.

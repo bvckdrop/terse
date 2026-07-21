@@ -12,6 +12,8 @@ if [ "${1:-}" = "--uninstall" ]; then
     && present="$present ~/.claude/terse" || absent="$absent ~/.claude/terse"
   { [ -L "$CLAUDE/skills/terse" ] || [ -e "$CLAUDE/skills/terse" ]; } \
     && present="$present ~/.claude/skills/terse" || absent="$absent ~/.claude/skills/terse"
+  { [ -L "$CLAUDE/skills/compress" ] || [ -e "$CLAUDE/skills/compress" ]; } \
+    && present="$present ~/.claude/skills/compress" || absent="$absent ~/.claude/skills/compress"
   grep -q 'terse/hooks' "$CLAUDE/settings.json" 2>/dev/null \
     && present="$present settings.json-hooks" || absent="$absent settings.json-hooks"
 
@@ -24,7 +26,7 @@ if [ "${1:-}" = "--uninstall" ]; then
     echo "Claude Code: full installation found — removing."
   fi
 
-  rm -f "$CLAUDE/terse" "$CLAUDE/skills/terse"
+  rm -f "$CLAUDE/terse" "$CLAUDE/skills/terse" "$CLAUDE/skills/compress"
   python3 - "$CLAUDE/settings.json" <<'PY'
 import json, sys
 path = sys.argv[1]
@@ -48,6 +50,7 @@ PY
   left=""
   { [ -L "$CLAUDE/terse" ] || [ -e "$CLAUDE/terse" ]; } && left="$left ~/.claude/terse"
   { [ -L "$CLAUDE/skills/terse" ] || [ -e "$CLAUDE/skills/terse" ]; } && left="$left ~/.claude/skills/terse"
+  { [ -L "$CLAUDE/skills/compress" ] || [ -e "$CLAUDE/skills/compress" ]; } && left="$left ~/.claude/skills/compress"
   grep -q 'terse/hooks' "$CLAUDE/settings.json" 2>/dev/null && left="$left settings.json-hooks"
   if [ -n "$left" ]; then
     echo "Claude Code: uninstall INCOMPLETE — still present:$left" >&2
@@ -61,6 +64,7 @@ fi
 mkdir -p "$CLAUDE/skills"
 ln -sfn "$ROOT" "$CLAUDE/terse"
 ln -sfn "$ROOT/skills/terse" "$CLAUDE/skills/terse"
+ln -sfn "$ROOT/skills/compress" "$CLAUDE/skills/compress"
 
 if [ ! -f "$ROOT/state" ] || ! grep -q '^mode=' "$ROOT/state"; then
   old_voice=$( { sed -n 2p "$ROOT/state" | tr -d '\r'; } 2>/dev/null || true)

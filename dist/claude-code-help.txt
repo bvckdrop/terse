@@ -1,4 +1,4 @@
-Terse v1.3.19 — efficient communication: terse by default, expands on risk.
+Terse v1.4.1 — efficient communication: terse by default, expands on risk.
   /terse on|off              enable / disable (the Charter is not toggleable)
   /terse crisp|buddy|witty|auto  set voice; auto adapts to prompt tone per response
   /terse help                this reference
@@ -9,6 +9,7 @@ Terse v1.3.19 — efficient communication: terse by default, expands on risk.
     reject <rule>            delete a candidate (no rejection history kept)
   /terse prune               sweep entries hand-marked status=rejected
   /terse consolidate         graduate long-lived adopted rules into core
+  /terse compress <file>     compress a memory file's input-token cost (skills/compress)
 Voices by example (auto picks per response from prompt tone):
   crisp  Deployed. Icon shows on device.        All 42 passed.
   buddy  Sweet — deployed, icon shows.          Cool, all 42 passed.

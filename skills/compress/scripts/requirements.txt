@@ -1,0 +1,4 @@
+# Optional. Only benchmark.py imports tiktoken (for accurate token counts);
+# detect.py, validate.py, and cli.py have zero dependencies. Without this,
+# benchmark.py falls back to a word-count approximation.
+tiktoken==0.13.0

@@ -3,3 +3,4 @@ dist/*.zip
 dist/*.plugin
 .anchor-count
 .DS_Store
+__pycache__/
